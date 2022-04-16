@@ -1,6 +1,6 @@
 import { NextPage } from "next";
-import { useWunderGraph } from "../../.wundergraph/generated/hooks";
-import { DeleteAllMessagesByUserEmailForm } from "../../.wundergraph/generated/forms";
+import { useWunderGraph } from "../../components/generated/hooks";
+import { DeleteAllMessagesByUserEmailForm } from "../../components/generated/forms";
 import { useState } from "react";
 
 const AdminPage: NextPage = () => {
