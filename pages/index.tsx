@@ -61,7 +61,15 @@ const Chat: NextPage<Props> = ({
         <div>
           <p>Please Login to be able to use the chat!</p>
           <br />
-          <button onClick={() => login.google()}>Login Google</button>
+          <button
+            onClick={() =>
+              process.env.NODE_ENV === "development"
+                ? login.github()
+                : login.google()
+            }
+          >
+            Login Google
+          </button>
           <br />
           <br />
         </div>
