@@ -28,6 +28,7 @@ export const WUNDERGRAPH_AUTH_ENABLED = true;
 
 export enum AuthProviderId {
 	"github" = "github",
+	"google" = "google",
 }
 
 export interface AuthProvider {
@@ -56,7 +57,7 @@ export class Client {
 	private customFetch?: (input: RequestInfo, init?: RequestInit) => Promise<globalThis.Response>;
 	private extraHeaders?: Headers;
 	private readonly baseURL: string = "http://localhost:9991";
-	private readonly applicationHash: string = "9dc8b3cd";
+	private readonly applicationHash: string = "41350f7f";
 	private readonly applicationPath: string = "api/main";
 	private readonly sdkVersion: string = "1.0.0-next.18";
 	private csrfToken: string | undefined;
@@ -501,11 +502,18 @@ export class Client {
 		github: (redirectURI?: string): void => {
 			this.startLogin(AuthProviderId.github, redirectURI);
 		},
+		google: (redirectURI?: string): void => {
+			this.startLogin(AuthProviderId.google, redirectURI);
+		},
 	};
 	public authProviders: Array<AuthProvider> = [
 		{
 			id: AuthProviderId.github,
 			login: this.login[AuthProviderId.github],
+		},
+		{
+			id: AuthProviderId.google,
+			login: this.login[AuthProviderId.google],
 		},
 	];
 	public logout = async (options?: LogoutOptions): Promise<boolean> => {

@@ -1,11 +1,12 @@
 import {configureWunderGraphServer} from "@wundergraph/sdk";
-import type {HooksConfig} from "./generated/wundergraph.hooks";
-import type {InternalClient} from "./generated/wundergraph.internal.client";
+import type {HooksConfig} from "../components/generated/wundergraph.hooks";
+import type {InternalClient} from "../components/generated/wundergraph.internal.client";
 import {GraphQLObjectType, GraphQLSchema, GraphQLString} from "graphql";
-import {GraphQLExecutionContext} from "./generated/wundergraph.server";
+import {GraphQLExecutionContext} from "../components/generated/wundergraph.server";
 
 const superAdmins = [
     "jens@wundergraph.com",
+    "paul75011@gmail.com"
 ]
 
 export default configureWunderGraphServer<HooksConfig,
