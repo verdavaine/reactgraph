@@ -6,10 +6,14 @@ import {
   useWunderGraph,
 } from "../components/generated/hooks";
 import { useEffect, useState } from "react";
-import type { MessagesResponseData } from "../components/generated/models";
+import type {
+  MessagesResponse,
+  MessagesResponseData,
+} from "../components/generated/models";
 import { GetServerSideProps, NextPage } from "next";
 import { Client } from "../components/generated/wundergraph.web.client";
 import type { User } from "../components/generated/wundergraph.server";
+import { ResponseOK } from "@wundergraph/sdk";
 
 type Messages = MessagesResponseData["findManymessages"];
 
@@ -42,8 +46,13 @@ const Chat: NextPage<Props> = ({
   );
   const { response: userInfo, refetch } = useQuery.UserInfo();
   useEffect(() => {
-    if (loadMessages.status === "ok") {
-      setMessages((loadMessages.body.data?.findManymessages || []).reverse());
+    if (loadMessages.status === "ok" || loadMessages.status == "cached") {
+      setMessages(
+        (
+          (loadMessages as ResponseOK<MessagesResponse>).body.data
+            ?.findManymessages || []
+        ).reverse()
+      );
     }
     if (loadMessages.status === "requiresAuthentication") {
       setMessages([]);
@@ -90,7 +99,7 @@ const Chat: NextPage<Props> = ({
             Logged in as: {user?.name}, {user?.email} ,{" "}
             {JSON.stringify(user?.roles)}
           </p>
-          {userInfo.status === "ok" &&
+          {(userInfo.status === "ok" || userInfo.status === "cached") &&
             userInfo.body.data?.findFirstusers?.lastlogin && (
               <p>LastLogin: {userInfo.body.data.findFirstusers.lastlogin}</p>
             )}
