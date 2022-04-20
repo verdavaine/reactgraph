@@ -20,7 +20,7 @@ export interface DisplayProps {
 }
 const DisplayResult: NextPage<DisplayProps> = ({ messages }) => {
   const { user } = useWunderGraph();
-  let loading = useLoadingComplete(messages.response);
+  let loading = useLoadingComplete(messages?.response);
   const [message, setMessage] = useState<string>("");
   const { mutate: addMessage, response: messageAdded } = useMutation.AddMessage(
     { refetchMountedQueriesOnSuccess: false }
@@ -84,10 +84,10 @@ const DisplayResult: NextPage<DisplayProps> = ({ messages }) => {
         {loading ? (
           <div className="loader"></div>
         ) : (
-          <button onClick={() => messages.refetch()}>Refetch</button>
+          <button onClick={() => messages?.refetch()}>Refetch</button>
         )}
         <br></br>
-        <pre>{JSON.stringify(messages.response, null, 2)}</pre>
+        <pre>{JSON.stringify(messages?.response, null, 2)}</pre>
       </div>
     </>
   );
