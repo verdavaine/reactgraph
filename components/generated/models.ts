@@ -226,6 +226,7 @@ export interface MessagesResponseData {
 		users: {
 			id: number;
 			name: string;
+			email: string;
 		};
 	}[];
 }

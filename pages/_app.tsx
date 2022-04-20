@@ -24,12 +24,14 @@ function MyApp({ Component, pageProps }: AppProps) {
           </li>
         </ul>
       </nav>
-      <WunderGraphProvider
-        endpoint={baseURL}
-        extraHeaders={{ "X-WunderGraph": "IsAwesome" }}
-      >
-        <Component {...pageProps} />
-      </WunderGraphProvider>
+      <div className={styles.container}>
+        <WunderGraphProvider
+          endpoint={baseURL}
+          extraHeaders={{ "X-WunderGraph": "IsAwesome" }}
+        >
+          <Component {...pageProps} />
+        </WunderGraphProvider>
+      </div>
     </>
   );
 }

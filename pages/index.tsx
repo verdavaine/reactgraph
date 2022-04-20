@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import type {
   MessagesResponse,
   MessagesResponseData,
+  UserInfoResponse,
 } from "../components/generated/models";
 import { GetServerSideProps, NextPage } from "next";
 import { Client } from "../components/generated/wundergraph.web.client";
@@ -46,6 +47,7 @@ const Chat: NextPage<Props> = ({
   );
   const { response: userInfo, refetch } = useQuery.UserInfo();
   useEffect(() => {
+    console.log(loadMessages.status);
     if (loadMessages.status === "ok" || loadMessages.status == "cached") {
       setMessages(
         (
@@ -64,12 +66,80 @@ const Chat: NextPage<Props> = ({
     }
   }, [messageAdded]);
   return (
-    <div className={styles.container}>
-      <h2>Add Message</h2>
-      {!user ? (
+    <>
+      <h3>Add Message</h3>
+      <fieldset disabled={!user}>
+        <input
+          type="text"
+          placeholder="message"
+          value={message}
+          onChange={(e) => setMessage(e.currentTarget.value)}
+        />
+        <button
+          onClick={() =>
+            addMessage({
+              refetchMountedQueriesOnSuccess: true,
+              input: { message: message },
+            })
+          }
+        >
+          submit
+        </button>
+      </fieldset>
+      {user ? (
+        <>
+          <h3>User</h3>
+          <fieldset>
+            <table>
+              <tbody>
+                <tr>
+                  <td>Name</td>
+                  <td>{user?.name}</td>
+                </tr>
+                <tr>
+                  <td>Email</td>
+                  <td>{user?.email}</td>
+                </tr>
+                <tr>
+                  <td>Roles</td>
+                  <td>{JSON.stringify(user?.roles)}</td>
+                </tr>
+                <tr>
+                  <td>Last Login</td>
+                  {userInfo.status === "loading" ? (
+                    <td>loading...</td>
+                  ) : (
+                    (userInfo.status === "ok" ||
+                      userInfo.status === "cached") &&
+                    (userInfo as ResponseOK<UserInfoResponse>).body.data
+                      ?.findFirstusers?.lastlogin && (
+                      <td>
+                        {
+                          (userInfo as ResponseOK<UserInfoResponse>).body.data
+                            ?.findFirstusers?.lastlogin
+                        }
+                      </td>
+                    )
+                  )}
+                </tr>
+              </tbody>
+            </table>
+
+            <button
+              onClick={async () => {
+                await logout();
+                window.location.reload();
+              }}
+            >
+              Logout
+            </button>
+          </fieldset>
+        </>
+      ) : (
         <div>
-          <p>Please Login to be able to use the chat!</p>
-          <br />
+          <p>
+            <em>Please Login to be able to use the chat!</em>
+          </p>
           <button
             onClick={() =>
               process.env.NODE_ENV === "development"
@@ -79,56 +149,40 @@ const Chat: NextPage<Props> = ({
           >
             Login Google
           </button>
-          <br />
-          <br />
-        </div>
-      ) : (
-        <div>
-          <input
-            placeholder="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-          />
-          <br />
-          <button onClick={() => addMessage({ input: { message } })}>
-            submit
-          </button>
-          <br />
-          <h3>User</h3>
-          <p>
-            Logged in as: {user?.name}, {user?.email} ,{" "}
-            {JSON.stringify(user?.roles)}
-          </p>
-          {(userInfo.status === "ok" || userInfo.status === "cached") &&
-            userInfo.body.data?.findFirstusers?.lastlogin && (
-              <p>LastLogin: {userInfo.body.data.findFirstusers.lastlogin}</p>
-            )}
-          <button
-            onClick={async () => {
-              await logout({
-                logout_openid_connect_provider: true,
-              });
-              window.location.reload();
-            }}
-          >
-            Logout
-          </button>
         </div>
       )}
+
       {messages !== null && messages.length !== 0 && (
-        <div>
-          {messages.map((message) => {
-            return (
-              <div key={message.id}>
-                <p>
-                  from {message.users.name}: {message.message}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+        <>
+          <h3>Messages</h3>
+
+          <fieldset>
+            <table style={{ columnWidth: "100px" }}>
+              <colgroup>
+                <col style={{ width: "15em" }} />
+                <col />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>from</th>
+                  <th>message</th>
+                </tr>
+              </thead>
+              <tbody>
+                {messages.map((message) => {
+                  return (
+                    <tr>
+                      <td>{message.users.name}</td>
+                      <td>{message.message}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </fieldset>
+        </>
       )}
-    </div>
+    </>
   );
 };
 
