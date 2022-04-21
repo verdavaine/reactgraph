@@ -1,6 +1,7 @@
 import styles from "../styles/Home.module.css";
 import {
   useLiveQuery,
+  useLoadingComplete,
   useMutation,
   useQuery,
   useWunderGraph,
@@ -41,11 +42,12 @@ const Chat: NextPage<Props> = ({
   const { mutate: addMessage, response: messageAdded } = useMutation.AddMessage(
     { refetchMountedQueriesOnSuccess: true }
   );
-  const { response: loadMessages } = useLiveQuery.Messages();
+  const { response: loadMessages, refetch } = useQuery.Messages();
   const [messages, setMessages] = useState<Messages>(
     (user !== undefined && serverSideMessages) || []
   );
-  const { response: userInfo, refetch } = useQuery.UserInfo();
+  const { response: userInfo } = useLiveQuery.UserInfo();
+
   useEffect(() => {
     console.log(loadMessages.status);
     if (loadMessages.status === "ok" || loadMessages.status == "cached") {
@@ -73,7 +75,7 @@ const Chat: NextPage<Props> = ({
           type="text"
           placeholder="message"
           value={message}
-          onChange={(e) => setMessage(e.currentTarget.value)}
+          onChange={(e) => setMessage(e.target.value)}
         />
         <button
           onClick={() =>
@@ -157,6 +159,8 @@ const Chat: NextPage<Props> = ({
           <h3>Messages</h3>
 
           <fieldset>
+            <button onClick={() => refetch()}>Refetch</button>
+
             <table style={{ columnWidth: "100px" }}>
               <colgroup>
                 <col style={{ width: "15em" }} />
@@ -171,7 +175,7 @@ const Chat: NextPage<Props> = ({
               <tbody>
                 {messages.map((message) => {
                   return (
-                    <tr>
+                    <tr key={message.id}>
                       <td>{message.users.name}</td>
                       <td>{message.message}</td>
                     </tr>

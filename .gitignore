@@ -36,5 +36,6 @@ yarn-error.log*
 # vercel
 .vercel
 /.wundergraph/.env.prod
+/.wundergraph/.env.mysql
 
 .env
