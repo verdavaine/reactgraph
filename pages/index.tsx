@@ -42,26 +42,24 @@ const Chat: NextPage<Props> = ({
   const { mutate: addMessage, response: messageAdded } = useMutation.AddMessage(
     { refetchMountedQueriesOnSuccess: true }
   );
-  const { response: loadMessages, refetch } = useQuery.Messages();
+  const { response: loadMessages, refetch: messageRefetch } =
+    useQuery.Messages();
   const [messages, setMessages] = useState<Messages>(
     (user !== undefined && serverSideMessages) || []
   );
-  const { response: userInfo } = useLiveQuery.UserInfo();
+  const { response: userInfo, refetch: userRefetch } = useQuery.UserInfo();
 
   useEffect(() => {
-    console.log(loadMessages.status);
-    if (loadMessages.status === "ok" || loadMessages.status == "cached") {
-      setMessages(
-        (
-          (loadMessages as ResponseOK<MessagesResponse>).body.data
-            ?.findManymessages || []
-        ).reverse()
-      );
+    if (loadMessages.status === "ok" || loadMessages.status === "cached") {
+      setMessages([
+        ...(loadMessages.body.data?.findManymessages || []).reverse(),
+      ]);
     }
     if (loadMessages.status === "requiresAuthentication") {
       setMessages([]);
     }
   }, [loadMessages]);
+
   useEffect(() => {
     if (messageAdded.status === "ok") {
       setMessage("");
@@ -92,6 +90,7 @@ const Chat: NextPage<Props> = ({
         <>
           <h3>User</h3>
           <fieldset>
+            <button onClick={() => userRefetch()}>Refetch</button>
             <table>
               <tbody>
                 <tr>
@@ -113,14 +112,8 @@ const Chat: NextPage<Props> = ({
                   ) : (
                     (userInfo.status === "ok" ||
                       userInfo.status === "cached") &&
-                    (userInfo as ResponseOK<UserInfoResponse>).body.data
-                      ?.findFirstusers?.lastlogin && (
-                      <td>
-                        {
-                          (userInfo as ResponseOK<UserInfoResponse>).body.data
-                            ?.findFirstusers?.lastlogin
-                        }
-                      </td>
+                    userInfo.body.data?.findFirstusers?.lastlogin && (
+                      <td>{userInfo.body.data?.findFirstusers?.lastlogin}</td>
                     )
                   )}
                 </tr>
@@ -159,7 +152,7 @@ const Chat: NextPage<Props> = ({
           <h3>Messages</h3>
 
           <fieldset>
-            <button onClick={() => refetch()}>Refetch</button>
+            <button onClick={() => messageRefetch()}>Refetch</button>
 
             <table style={{ columnWidth: "100px" }}>
               <colgroup>

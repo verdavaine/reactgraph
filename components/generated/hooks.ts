@@ -100,6 +100,7 @@ const Query = <R extends {}, I extends {}>(
 		}
 		const cacheKey = JSON.stringify(_options);
 		const cached = queryCache[cacheKey];
+		console.log (JSON.stringify(cached))
 		if (response.status !== "ok" && cached) {
 			setResponse({
 				status: "cached",
@@ -117,8 +118,10 @@ const Query = <R extends {}, I extends {}>(
 			}
 			if (result.status === "ok") {
 				queryCache[cacheKey] = result.body;
+				console.log (JSON.stringify(queryCache[cacheKey]))
 			}
-			setResponse(result);
+			//setResponse(JSON.parse(JSON.stringify(result)));
+			setResponse(result)
 			setShouldFetch(false);
 		})();
 		return () => {
