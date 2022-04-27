@@ -42,6 +42,12 @@ interface InternalOptions {
 	requiresAuthentication: boolean;
 }
 
+const extractName = (promiseFactory: (options: RequestOptions<any, any>) => Promise<Response<any>>) => {
+	const query = promiseFactory.toString()
+	const queryName = query.slice(query.indexOf('path')+10, query.indexOf(')')+1) 
+	return queryName
+}
+
 const Query = <R extends {}, I extends {}>(
 	promiseFactory: (options: RequestOptions<I, R>) => Promise<Response<R>>,
 	internalOptions: InternalOptions,
@@ -98,9 +104,13 @@ const Query = <R extends {}, I extends {}>(
 		if (response.status === "ok") {
 			setResponse({ status: "ok", refetching: true, body: response.body });
 		}
+		//const cacheKey = JSON.stringify(_options);
+		console.log (promiseFactory.toString())
 		const cacheKey = JSON.stringify(_options);
+		//const cacheKey = extractName(promiseFactory)+'-'+JSON.stringify(_options);
+
 		const cached = queryCache[cacheKey];
-		console.log (JSON.stringify(cached))
+		console.log (JSON.stringify(queryCache, null, 2))
 		if (response.status !== "ok" && cached) {
 			setResponse({
 				status: "cached",
@@ -118,10 +128,10 @@ const Query = <R extends {}, I extends {}>(
 			}
 			if (result.status === "ok") {
 				queryCache[cacheKey] = result.body;
-				console.log (JSON.stringify(queryCache[cacheKey]))
+				console.log (JSON.stringify(queryCache, null, 2))
 			}
-			//setResponse(JSON.parse(JSON.stringify(result)));
-			setResponse(result)
+			setResponse(JSON.parse(JSON.stringify(result)));
+			setResponse(result);
 			setShouldFetch(false);
 		})();
 		return () => {

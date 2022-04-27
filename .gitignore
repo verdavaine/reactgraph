@@ -39,3 +39,12 @@ yarn-error.log*
 /.wundergraph/.env.mysql
 
 .env
+
+#oracle
+/.wundergraph/package.json
+/.wundergraph/Dockerfile
+/.wundergraph/.dockerignore
+/k8s
+Makefile
+
+

@@ -101,7 +101,7 @@ export default configureWunderGraphServer<HooksConfig,
                             type: GraphQLString,
                             resolve(root, args, ctx) {
                                 ctx.log.info(`headers: ${JSON.stringify(ctx.requestContext.clientRequest.headers)}`);
-                                return ctx.requestContext.clientRequest.headers["User-Agent"] || "world";
+                                return ctx.requestContext.clientRequest.headers["User-Agent"] || "world !!!";
                             },
                         },
                     },

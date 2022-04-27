@@ -15,6 +15,8 @@ import {
     databaseURL: new EnvironmentVariable("DATABASE_URL"),
   }
   
+  console.log ('TYPEDB', process.env.TYPEDB)
+  console.log ('databaseURL', dbParams.databaseURL)
   const db = process.env.TYPEDB == "postgresql" ? introspect.postgresql(dbParams): introspect.mysql(dbParams);
   const countries = introspect.graphql({
     apiNamespace: "countries",
@@ -61,9 +63,9 @@ import {
     authentication: {
       cookieBased: {
         providers: [
-          process.env.NODE_ENV !== "production" ?
-          authProviders.demo():
-          authProviders.github({
+          //process.env.NODE_ENV !== "production" ?
+          authProviders.demo()
+         /* authProviders.github({
             id: "github",
             clientId: new EnvironmentVariable("github_clientId"),
             clientSecret: new EnvironmentVariable("github_clientSecret")
@@ -72,7 +74,7 @@ import {
             id: "google",
             clientId: new EnvironmentVariable("google_react_clientId"),
             clientSecret: new EnvironmentVariable("google_react_clientSecret")
-          }),          
+          }),  */        
         ],
         authorizedRedirectUris: ['http://localhost:3000','https://solidgraph.ovh','https://tribu.ovh'],
       },
@@ -80,7 +82,7 @@ import {
     operations,
     security: {
       enableGraphQLEndpoint: process.env.NODE_ENV !== "production",
-      allowedHosts: ["api.solidgraph.ovh", "api.tribu.ovh"]
+      allowedHosts: ["api.solidgraph.ovh", "api.tribu.ovh","192.18.131.114"]
     },
   })
   
