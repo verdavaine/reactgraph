@@ -43,12 +43,12 @@ import {
           templates.typescript.responseModels,
         ],
       },
-/*      {
+      {
         templates: [
             ...templates.typescript.react
         ],
         path: "../components/generated/",
-      }  */
+      }  
     ],
     cors: {
       ...cors.allowAll,
