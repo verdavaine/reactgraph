@@ -41,7 +41,6 @@ yarn-error.log*
 .env
 
 #oracle
-/.wundergraph/package.json
 /.wundergraph/Dockerfile
 /.wundergraph/.dockerignore
 /k8s

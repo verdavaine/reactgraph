@@ -43,12 +43,12 @@ import {
           templates.typescript.responseModels,
         ],
       },
-      {
+/*      {
         templates: [
             ...templates.typescript.react
         ],
         path: "../components/generated/",
-      }  
+      }  */
     ],
     cors: {
       ...cors.allowAll,
@@ -65,11 +65,11 @@ import {
         providers: [
           process.env.NODE_ENV !== "production" ?
           authProviders.demo():
-         /* authProviders.github({
+          authProviders.github({
             id: "github",
-            clientId: new EnvironmentVariable("github_clientId"),
-            clientSecret: new EnvironmentVariable("github_clientSecret")
-          }),*/
+            clientId: new EnvironmentVariable("github_react_clientId"),
+            clientSecret: new EnvironmentVariable("github_react_clientSecret")
+          }),
           authProviders.google({
             id: "google",
             clientId: new EnvironmentVariable("google_react_clientId"),
@@ -82,7 +82,7 @@ import {
     operations,
     security: {
       enableGraphQLEndpoint: process.env.NODE_ENV !== "production",
-      allowedHosts: ["api.solidgraph.ovh", "api.tribu.ovh","192.18.131.114"]
+      allowedHosts: ["api.solidgraph.ovh", "api.tribu.ovh"]
     },
   })
   
