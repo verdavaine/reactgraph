@@ -63,18 +63,18 @@ import {
     authentication: {
       cookieBased: {
         providers: [
-          //process.env.NODE_ENV !== "production" ?
-          authProviders.demo()
+          process.env.NODE_ENV !== "production" ?
+          authProviders.demo():
          /* authProviders.github({
             id: "github",
             clientId: new EnvironmentVariable("github_clientId"),
             clientSecret: new EnvironmentVariable("github_clientSecret")
-          }),
+          }),*/
           authProviders.google({
             id: "google",
             clientId: new EnvironmentVariable("google_react_clientId"),
             clientSecret: new EnvironmentVariable("google_react_clientSecret")
-          }),  */        
+          }),         
         ],
         authorizedRedirectUris: ['http://localhost:3000','https://solidgraph.ovh','https://tribu.ovh'],
       },
